@@ -7,6 +7,7 @@ const Blog = ({ blog, setErrorMessage, setBlogs, blogs, user }) => {
 
   const [visible, setVisible] = useState(false)
 
+
   const updateLikes = async () => {
 
     const changedBlog = {
@@ -33,13 +34,14 @@ const Blog = ({ blog, setErrorMessage, setBlogs, blogs, user }) => {
     event.preventDefault()
     const id = event.target.value
     blogService.setToken(user.token)
+
     const blogNimi = blogs.find(idBlog => { return '' + idBlog.id === id })
-    const saakoPoistaa = window.confirm(`Saako poistaa ${blogNimi.name}?`);
+    const saakoPoistaa = window.confirm(`Saako poistaa ${blogNimi.title}?`)
     try {
       if (saakoPoistaa) {
         await blogService.deleteBlog(id)
-        setBlogs(blogs.filter(b => (b.id !== id) && b).sort((a,b) => {return b.likes - a.likes}))
-        
+        setBlogs(blogs.filter(b => (b.id !== id) && b).sort((a, b) => { return b.likes - a.likes }))
+
         setErrorMessage(
           'Tiedot poistettu onnistuneesti!'
         )
@@ -59,7 +61,7 @@ const Blog = ({ blog, setErrorMessage, setBlogs, blogs, user }) => {
     <div className="Blog">
       <div onClick={() => setVisible(!visible)}>
         {visible ? `${blog.title} ` : `
-     ${blog.title} `}
+     ${ blog.title} `}
         {blog.author}
       </div>
       {visible &&
@@ -68,11 +70,10 @@ const Blog = ({ blog, setErrorMessage, setBlogs, blogs, user }) => {
           {blog.likes} likes
           <button className="like" onClick={updateLikes}>Like</button> <br />
           {blog.user && (`Blogin lisännyt: ${blog.user.name}`)}
-          <button value={blog.id} onClick={deleteBlog}>Poista</button>
+          {user.name === (blog.user && blog.user.name) ?
+            <button value={blog.id} onClick={deleteBlog}>Poista</button> : ''}
         </div>}
-
     </div>
-
   )
 }
 

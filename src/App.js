@@ -4,14 +4,14 @@ import NewBlog from './components/NewBlog'
 import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import './index.css';
+import './index.css'
 
 const Notification = ({ message }) => {
   if (message === null) {
     return null
   }
 
-  if (message === "Uusi blogi lisätty!" || message === "Kirjauduttu ulos.") {
+  if (message === 'Uusi blogi lisätty!' || message === 'Kirjauduttu ulos.') {
     return (
       <div className="update">
         {message}
@@ -36,17 +36,21 @@ const App = () => {
   const [newUrl, setNewUrl] = useState('')
   const [loginVisible, setLoginVisible] = useState(false)
 
-  useEffect(() => {
+
+  const hook = () => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs.sort((a,b) => {return b.likes - a.likes}))
+      setBlogs(blogs.sort((a, b) => { return b.likes - a.likes }))
     )
-  }, [])
+  }
+
+  useEffect(hook, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+
       blogService.setToken(user.token)
     }
   }, [])
@@ -59,7 +63,7 @@ const App = () => {
       url: newUrl
     }
     blogService.setToken(user.token)
-    console.log('Mikä token käytössä: ', user.token)
+    console.log('Mikä token käytössä: ', user.token, user.name)
     try {
       const returnedBlog = await blogService.create(blogObject)
 
@@ -67,7 +71,7 @@ const App = () => {
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
-
+      hook()
       setErrorMessage(
         'Uusi blogi lisätty!'
       )
@@ -136,18 +140,18 @@ const App = () => {
   const blogForm = () => {
     return (<div>
       {blogs
-      .map(blog =>
-        <Blog key={blog.id} 
-        blog={blog} 
-        setErrorMessage={setErrorMessage}
-        setBlogs={setBlogs}
-        blogs={blogs}
-        user={user}
-         />)}
-      
-      
+        .map(blog =>
+          <Blog key={blog.id}
+            blog={blog}
+            setErrorMessage={setErrorMessage}
+            setBlogs={setBlogs}
+            blogs={blogs}
+            user={user}
+          />)}
+
+
     </div>
-    
+
     )
   }
 

@@ -7,17 +7,15 @@ const LoginForm = ({ handleLogin, username, password, setUsername, setPassword }
     <form onSubmit={handleLogin}>
       <div>
         <h3>Kirjaudu sisään, ole hyvä:</h3>
-       käyttäjätunnus   
-        <input
+        käyttäjätunnus <input
           type="text"
           value={username}
           name="Username"
           onChange={({ target }) => setUsername(target.value)}
-        />  
+        />
       </div>
       <div>
-        salasana 
-        <input
+        salasana <input
           type="password"
           value={password}
           name="Password"
