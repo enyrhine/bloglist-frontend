@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
+import  { useField } from './hooks'
 
 const Notification = ({ message }) => {
   if (message === null) {
@@ -27,14 +28,17 @@ const Notification = ({ message }) => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  //const [username, setUsername] = useState('')
+  //const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
   const [loginVisible, setLoginVisible] = useState(false)
+  const username = useField('text')
+  const password = useField('password')
+  //const username = useField('text')
 
 
   const hook = () => {
@@ -118,16 +122,22 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password
+        username: username.value,
+        password: password.value
+        //username.value(''), password.value
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
-      console.log('Mikä token käytössä: ', user.token)
+      //console.log('Mikä token käytössä: ', user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
+      //setUsername('')
+      //username.setValue('')
+      username.reset()
+      //setPassword('')
+      //password.value = ''
+      password.reset()
     } catch (exception) {
       setErrorMessage('Käyttäjätunnus tai salasana virheellinen. Otappa joku toinen')
       setTimeout(() => {
@@ -188,13 +198,7 @@ const App = () => {
       <Notification message={errorMessage} />
       {user === null ?
         <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
-
-        /> :
+          handleLogin={handleLogin} password={password} username={username} /> :
         <div>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>kirjaudu ulos</button>
