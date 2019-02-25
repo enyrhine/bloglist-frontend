@@ -1,27 +1,30 @@
 import React from 'react'
 import '../index.css'
 
-const NewBlog = ({ addBlog, newTitle, setNewTitle, newAuthor, handleAuthor, newUrl, handleUrl }) => {
+const NewBlog = ({ addBlog, newTitle, newAuthor, newUrl }) => {
 
   return (
     <div className="newblog"><h2>Uusi blogi</h2>
       <form onSubmit={addBlog}>
         <div>
           Title: <input className="input-blog"
-            value={newTitle}
+            type={newTitle.type}
+            value={newTitle.value}
             name={'Title'}
-            onChange={({ target }) => setNewTitle(target.value)} />
+            onChange={newTitle.onChange} />
 
         </div>
         <div>
           Author: <input className="input-blog"
-            value={newAuthor}
-            onChange={handleAuthor} />
+            type={newAuthor.type}
+            value={newAuthor.value}
+            onChange={newAuthor.onChange} />
         </div>
         <div>
           url: <input className="input-blog"
-            value={newUrl}
-            onChange={handleUrl} />
+            type={newUrl.type}
+            value={newUrl.value}
+            onChange={newUrl.onChange} />
         </div>
         <div>
           <button type="submit">Lisää</button>

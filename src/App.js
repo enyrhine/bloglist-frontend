@@ -32,12 +32,15 @@ const App = () => {
   //const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  //const [newTitle, setNewTitle] = useState('')
+  //const [newAuthor, setNewAuthor] = useState('')
+  //const [newUrl, setNewUrl] = useState('')
   const [loginVisible, setLoginVisible] = useState(false)
   const username = useField('text')
   const password = useField('password')
+  const newTitle = useField('text')
+  const newAuthor = useField('text')
+  const newUrl = useField('text')
   //const username = useField('text')
 
 
@@ -62,9 +65,9 @@ const App = () => {
   const addBlog = async (event) => {
     event.preventDefault()
     const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
+      title: newTitle.value,
+      author: newAuthor.value,
+      url: newUrl.value
     }
     blogService.setToken(user.token)
     console.log('Mikä token käytössä: ', user.token, user.name)
@@ -72,9 +75,12 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject)
 
       setBlogs(blogs.concat(returnedBlog))
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
+      //setNewTitle('')
+      //setNewAuthor('')
+      //setNewUrl('')
+      newAuthor.reset()
+      newTitle.reset()
+      newUrl.reset()
       hook()
       setErrorMessage(
         'Uusi blogi lisätty!'
@@ -91,7 +97,7 @@ const App = () => {
     //console.log('Miksi ei onnistu blogin lisäys: ', blogObject)
   }
 
-  const handleAuthor = (event) => {
+  /*const handleAuthor = (event) => {
     event.preventDefault()
     setNewAuthor(event.target.value)
   }
@@ -99,7 +105,7 @@ const App = () => {
   const handleUrl = (event) => {
     event.preventDefault()
     setNewUrl(event.target.value)
-  }
+  }*/
 
   const handleLogout = async (event) => {
     event.preventDefault()
@@ -179,11 +185,12 @@ const App = () => {
           <NewBlog
             addBlog={addBlog}
             newTitle={newTitle}
-            setNewTitle={setNewTitle}
+            //setNewTitle={setNewTitle}
             newAuthor={newAuthor}
             newUrl={newUrl}
-            handleAuthor={handleAuthor}
-            handleUrl={handleUrl} />
+            //handleAuthor={handleAuthor}
+            //handleUrl={handleUrl}
+          />
           <button className="newblog-button" onClick={() => setLoginVisible(false)}>Peruuta</button>
           <p> </p>
         </div>
