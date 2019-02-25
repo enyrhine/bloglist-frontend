@@ -38,7 +38,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      setBlogs(blogs.sort((a,b) => {return b.likes - a.likes}))
     )
   }, [])
 
@@ -80,7 +80,6 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
-
     //console.log('Miksi ei onnistu blogin lisäys: ', blogObject)
   }
 
@@ -130,15 +129,22 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
-    console.log('loggin in with', username, password)
+    console.log('loggin in with', username)
   }
 
   const blogForm = () => {
     return (<div>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {blogs
+      .map(blog =>
+        <Blog key={blog.id} 
+        blog={blog} 
+        setErrorMessage={setErrorMessage}
+        setBlogs={setBlogs}
+        blogs={blogs}
+         />
       )}
     </div>
+    
     )
   }
 
