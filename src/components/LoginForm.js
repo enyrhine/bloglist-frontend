@@ -7,11 +7,12 @@ import PropTypes from 'prop-types'
 const LoginForm = ({ handleLogin, username, password }) => {
   //const username = useField('text')
   //const password = useField('password')
+  //const destructed = [username.reset, ...username]
   return (
     <form onSubmit={handleLogin}>
       <div>
         <h3>Kirjaudu sisään, ole hyvä:</h3>
-        käyttäjätunnus <input
+        käyttäjätunnus <input //{...username[username.reset()]}
           type={username.type}
           value={username.value}
           name='Username'
