@@ -59,7 +59,7 @@ const App = () => {
       url: newUrl
     }
     blogService.setToken(user.token)
-    //console.log('Mikä token käytössä: ', user.token)
+    console.log('Mikä token käytössä: ', user.token)
     try {
       const returnedBlog = await blogService.create(blogObject)
 
@@ -120,6 +120,7 @@ const App = () => {
         'loggedBlogappUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
+      console.log('Mikä token käytössä: ', user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -141,8 +142,10 @@ const App = () => {
         setErrorMessage={setErrorMessage}
         setBlogs={setBlogs}
         blogs={blogs}
-         />
-      )}
+        user={user}
+         />)}
+      
+      
     </div>
     
     )
