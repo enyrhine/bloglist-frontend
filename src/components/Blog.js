@@ -10,16 +10,17 @@ const Blog = ({ blog, setErrorMessage, setBlogs, blogs, user }) => {
 
   const updateLikes = async () => {
 
-    const changedBlog = {
-      title: blog.title,
+    const changedBlog = { ...blog, likes: blog.likes + 1 }
+    /* title: blog.title,
       author: blog.author,
       url: blog.url,
       likes: (blog.likes + 1)
-    }
+      //user: blog.user
+    }*/
 
     try {
       console.log('mitä hempskattia')
-      const returnedBlog = await blogService.update(blog.id, changedBlog)
+      const returnedBlog = await blogService.update(changedBlog)
       setBlogs(blogs.map(oneBlog => oneBlog.id !== blog.id ? oneBlog : returnedBlog).sort((a, b) => { return b.likes - a.likes }))
 
     } catch (exception) {

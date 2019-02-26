@@ -12,7 +12,7 @@ const LoginForm = ({ handleLogin, username, password }) => {
     <form onSubmit={handleLogin}>
       <div>
         <h3>Kirjaudu sisään, ole hyvä:</h3>
-        käyttäjätunnus <input //{...username[username.reset()]}
+        käyttäjätunnus <input
           type={username.type}
           value={username.value}
           name='Username'
