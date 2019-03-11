@@ -1,7 +1,35 @@
 import React from 'react'
 import '../index.css'
+import blogService from '../services/blogs'
+import { createNotification } from '../reducers/notificationReducer'
+//import { connect } from 'react-redux'
 
-const NewBlog = ({ addBlog, newTitle, newAuthor, newUrl }) => {
+const NewBlog = ( props ) => {
+  const store = props.store
+  const { user, setBlogs, blogs, newTitle, newAuthor, newUrl, hook } = props
+
+  const addBlog = async (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title: newTitle.value,
+      author: newAuthor.value,
+      url: newUrl.value
+    }
+    blogService.setToken(user.token)
+    console.log('Mikä token käytössä: ', user.token, user.name)
+    try {
+      const returnedBlog = await blogService.create(blogObject)
+
+      setBlogs(blogs.concat(returnedBlog))
+      newAuthor.reset()
+      newTitle.reset()
+      newUrl.reset()
+      hook()
+      store.dispatch(createNotification('Uusi blogi lisätty!', 5))
+    } catch (exception) {
+      store.dispatch(createNotification('Blogin lisääminen epäonnistui! Täytä kaikki kentät.', 5)
+      )}
+  }
 
   return (
     <div className="newblog"><h2>Uusi blogi</h2>
@@ -34,5 +62,13 @@ const NewBlog = ({ addBlog, newTitle, newAuthor, newUrl }) => {
 
   )
 }
+
+/*const mapDispatchToProps = {
+  createNotification
+}
+
+export default connect(
+  mapDispatchToProps
+)(NewBlog)*/
 
 export default NewBlog

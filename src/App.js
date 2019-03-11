@@ -1,48 +1,26 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+//import { connect } from 'react-redux'
+//import Blog from './components/Blog'
 import NewBlog from './components/NewBlog'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
 import  { useField } from './hooks'
+import Notification from './components/Notification'
 
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
 
-  if (message === 'Uusi blogi lisätty!' || message === 'Kirjauduttu ulos.') {
-    return (
-      <div className="update">
-        {message}
-      </div>
-    )
-  }
-  return (
-    <div className="error">
-      {message}
-    </div>
-  )
-}
-
-const App = () => {
+const App = (props) => {
+  const store = props.store
   const [blogs, setBlogs] = useState([])
-  //const [username, setUsername] = useState('')
-  //const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
-  //const [newTitle, setNewTitle] = useState('')
-  //const [newAuthor, setNewAuthor] = useState('')
-  //const [newUrl, setNewUrl] = useState('')
   const [loginVisible, setLoginVisible] = useState(false)
   const username = useField('text')
   const password = useField('password')
   const newTitle = useField('text')
   const newAuthor = useField('text')
   const newUrl = useField('text')
-  //const username = useField('text')
-
 
   const hook = () => {
     blogService.getAll().then(blogs =>
@@ -62,65 +40,20 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle.value,
-      author: newAuthor.value,
-      url: newUrl.value
-    }
-    blogService.setToken(user.token)
-    console.log('Mikä token käytössä: ', user.token, user.name)
-    try {
-      const returnedBlog = await blogService.create(blogObject)
-
-      setBlogs(blogs.concat(returnedBlog))
-      //setNewTitle('')
-      //setNewAuthor('')
-      //setNewUrl('')
-      newAuthor.reset()
-      newTitle.reset()
-      newUrl.reset()
-      hook()
-      setErrorMessage(
-        'Uusi blogi lisätty!'
-      )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000)
-    } catch (exception) {
-      setErrorMessage('Blogin lisääminen epäonnistui! Täytä kaikki kentät.')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-    //console.log('Miksi ei onnistu blogin lisäys: ', blogObject)
-  }
-
-  /*const handleAuthor = (event) => {
-    event.preventDefault()
-    setNewAuthor(event.target.value)
-  }
-
-  const handleUrl = (event) => {
-    event.preventDefault()
-    setNewUrl(event.target.value)
-  }*/
-
   const handleLogout = async (event) => {
     event.preventDefault()
     try {
       //const user = await loginService.logout('')
       window.localStorage.clear()
       setUser(null)
-      setErrorMessage('Kirjauduttu ulos.')
+      /* KORJAA TÄHÄN setErrorMessage('Kirjauduttu ulos.')
       setTimeout(() => {
         setErrorMessage(null)
-      }, 3000)
+      }, 3000)*/
     } catch (exception) {
-      setTimeout(() => {
+      /* KORJAA TÄHÄN setTimeout(() => {
         setErrorMessage(null)
-      }, 5000)
+      }, 5000)*/
     }
   }
 
@@ -130,7 +63,6 @@ const App = () => {
       const user = await loginService.login({
         username: username.value,
         password: password.value
-        //username.value(''), password.value
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
@@ -145,30 +77,12 @@ const App = () => {
       //password.value = ''
       password.reset()
     } catch (exception) {
-      setErrorMessage('Käyttäjätunnus tai salasana virheellinen. Otappa joku toinen')
+      /* KORJAA TÄHÄN setErrorMessage('Käyttäjätunnus tai salasana virheellinen. Otappa joku toinen')
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000)
+      }, 5000)*/
     }
     console.log('loggin in with', username)
-  }
-
-  const blogForm = () => {
-    return (<div>
-      {blogs
-        .map(blog =>
-          <Blog key={blog.id}
-            blog={blog}
-            setErrorMessage={setErrorMessage}
-            setBlogs={setBlogs}
-            blogs={blogs}
-            user={user}
-          />)}
-
-
-    </div>
-
-    )
   }
 
   const newBlogForm = () => {
@@ -183,13 +97,14 @@ const App = () => {
         </div>
         <div style={showWhenVisible}>
           <NewBlog
-            addBlog={addBlog}
+            user= {user}
+            setBlogs={setBlogs}
+            blogs={blogs}
             newTitle={newTitle}
-            //setNewTitle={setNewTitle}
             newAuthor={newAuthor}
             newUrl={newUrl}
-            //handleAuthor={handleAuthor}
-            //handleUrl={handleUrl}
+            hook={hook}
+            store={store}
           />
           <button className="newblog-button" onClick={() => setLoginVisible(false)}>Peruuta</button>
           <p> </p>
@@ -197,12 +112,13 @@ const App = () => {
       </div>
     )
   }
+  /* */
 
   return (
     <div>
 
       <h2>Blogs</h2>
-      <Notification message={errorMessage} />
+      <Notification />
       {user === null ?
         <LoginForm
           handleLogin={handleLogin} password={password} username={username} /> :
@@ -211,7 +127,7 @@ const App = () => {
           <button onClick={handleLogout}>kirjaudu ulos</button>
           <p> </p>
           {newBlogForm()}
-          {blogForm()}
+          <BlogForm blogs={blogs} setBlogs={setBlogs} store={store} user={user} />
         </div>
       }
     </div>

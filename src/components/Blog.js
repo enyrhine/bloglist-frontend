@@ -1,33 +1,21 @@
 import React, { useState } from 'react'
 import '../index.css'
 import blogService from '../services/blogs'
+import { createNotification } from '../reducers/notificationReducer'
+//import { connect } from 'react-redux'
 
-
-const Blog = ({ blog, setErrorMessage, setBlogs, blogs, user }) => {
-
+const Blog = ({ blog, setBlogs, blogs, user, store }) => {
   const [visible, setVisible] = useState(false)
-
-
   const updateLikes = async () => {
 
     const changedBlog = { ...blog, likes: blog.likes + 1 }
-    /* title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: (blog.likes + 1)
-      //user: blog.user
-    }*/
-
     try {
       console.log('mitä hempskattia')
       const returnedBlog = await blogService.update(changedBlog)
       setBlogs(blogs.map(oneBlog => oneBlog.id !== blog.id ? oneBlog : returnedBlog).sort((a, b) => { return b.likes - a.likes }))
 
     } catch (exception) {
-      setErrorMessage('Likettäminen epäonnistui...')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      store.dispatch(createNotification('Likettäminen epäonnistui...', 3))
     }
   }
 
@@ -42,19 +30,10 @@ const Blog = ({ blog, setErrorMessage, setBlogs, blogs, user }) => {
       if (saakoPoistaa) {
         await blogService.deleteBlog(id)
         setBlogs(blogs.filter(b => (b.id !== id) && b).sort((a, b) => { return b.likes - a.likes }))
-
-        setErrorMessage(
-          'Tiedot poistettu onnistuneesti!'
-        )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 3000)
+        store.dispatch(createNotification('Tiedot poistettu onnistuneesti!', 3))
       }
     } catch (exception) {
-      setErrorMessage('Poistaminen epäonnistui...')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      store.dispatch(createNotification('Poistaminen epäonnistui..', 3))
     }
   }
 
@@ -77,5 +56,13 @@ const Blog = ({ blog, setErrorMessage, setBlogs, blogs, user }) => {
     </div>
   )
 }
+
+/*const mapDispatchToProps = {
+  createNotification
+}
+
+export default connect(
+  mapDispatchToProps
+)(Blog)*/
 
 export default Blog
